@@ -1,0 +1,8 @@
+.virtualKeyboard__textArea {
+  width: 40rem;
+  min-width: 10vw;
+  max-width: 90vw;
+  min-height: 20vh;
+  max-height: 50vh;
+  height: 15rem;
+}
