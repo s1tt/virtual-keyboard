@@ -1,8 +1,8 @@
 import Key from '../components/Key.js';
 import { enKeys, enKeysCaps, ruKeys, ruKeysCaps } from '../utils/constants.js';
 
-let isCaps = false;
-let isEng = true;
+let isCaps = sessionStorage.getItem('isCaps') === 'true' || false;
+let isEng = sessionStorage.getItem('isEng') === 'false' || false;
 
 const body = document.querySelector('body');
 
@@ -43,6 +43,16 @@ const keySimbol = document.createElement('span');
 keySimbol.className = 'virtualKeyboard__keycap-simbol';
 keyTemplate.append(keySimbol);
 
+const oprationSystem = document.createElement('p');
+oprationSystem.className = 'virtualKeyboard__description';
+oprationSystem.textContent = 'Keyboard created in the Windows operating system';
+virtualKeyboardSection.append(oprationSystem);
+
+const commandForChangeLang = document.createElement('p');
+commandForChangeLang.className = 'virtualKeyboard__description';
+commandForChangeLang.textContent = 'To switch the language combination: left shift + alt';
+virtualKeyboardSection.append(commandForChangeLang);
+
 const drowKeys = function (keysMap) {
   Array.from(keyboardEl.children).forEach(el => el.remove());
   for (const [keyName, key] of Object.entries(keysMap)) {
@@ -59,6 +69,7 @@ const drowKeys = function (keysMap) {
       // Капс ли?
       newKeycap.addEventListener('click', e => {
         isCaps = !isCaps;
+        sessionStorage.setItem('isCaps', isCaps);
         if (isCaps) {
           drowKeys(enKeysCaps);
         } else {
@@ -75,7 +86,7 @@ const drowKeys = function (keysMap) {
   }
 };
 
-drowKeys(enKeys);
+// drowKeys(enKeys);
 
 document.addEventListener('keydown', e => {
   console.log(e);
@@ -96,21 +107,31 @@ document.addEventListener('keyup', e => {
   });
 });
 
+const setLang = function () {
+  if (isCaps && isEng) {
+    isEng = !isEng;
+    drowKeys(ruKeysCaps);
+    sessionStorage.setItem('isEng', isEng);
+  } else if (!isCaps && isEng) {
+    isEng = !isEng;
+    drowKeys(ruKeys);
+    sessionStorage.setItem('isEng', isEng);
+  } else if (isCaps && !isEng) {
+    isEng = !isEng;
+    drowKeys(enKeysCaps);
+    sessionStorage.setItem('isEng', isEng);
+  } else if (!isCaps && !isEng) {
+    isEng = !isEng;
+    drowKeys(enKeys);
+    sessionStorage.setItem('isEng', isEng);
+  }
+};
+
+setLang();
+
 document.addEventListener('keydown', event => {
   if ((event.code === 'AltLeft' && event.shiftKey) || (event.shiftKey && event.altKey)) {
-    // выполнение кода при зажатии клавиш Shift + A
-    if (isCaps && isEng) {
-      drowKeys(ruKeysCaps);
-      isEng = !isEng;
-    } else if (!isCaps && isEng) {
-      drowKeys(ruKeys);
-      isEng = !isEng;
-    } else if (isCaps && !isEng) {
-      drowKeys(enKeysCaps);
-      isEng = !isEng;
-    } else if (!isCaps && !isEng) {
-      drowKeys(enKeys);
-      isEng = !isEng;
-    }
+    // Смена языка
+    setLang();
   }
 });
