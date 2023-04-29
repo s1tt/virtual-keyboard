@@ -4,14 +4,11 @@ export default class Key {
     this._key = key;
     this._keycap = keycap;
     this._textArea = document.querySelector('.virtualKeyboard__textArea');
-    // this.generate = this.generate.bind(this);
   }
 
   generate() {
     this._keycap.querySelector('.virtualKeyboard__keycap-simbol').textContent = this._key;
-    this._keycap.addEventListener('click', e => {
-      console.log(this._code);
-
+    this._keycap.addEventListener('click', () => {
       if (this._code === 'Backspace') {
         const cursorPosition = this._textArea.selectionStart;
         const currentValue = this._textArea.value;

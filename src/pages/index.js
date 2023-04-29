@@ -1,5 +1,8 @@
 import Key from '../components/Key.js';
-import { enKeys, enKeysCaps } from '../utils/constants.js';
+import { enKeys, enKeysCaps, ruKeys, ruKeysCaps } from '../utils/constants.js';
+
+let isCaps = false;
+let isEng = true;
 
 const body = document.querySelector('body');
 
@@ -40,35 +43,26 @@ const keySimbol = document.createElement('span');
 keySimbol.className = 'virtualKeyboard__keycap-simbol';
 keyTemplate.append(keySimbol);
 
-let isCaps = false;
-
 const drowKeys = function (keysMap) {
   Array.from(keyboardEl.children).forEach(el => el.remove());
   for (const [keyName, key] of Object.entries(keysMap)) {
-    // console.log(`${keyName} : ${keysMap[keyName]}`);
     const keycap = keyTemplate.cloneNode(true);
     const newKeycap = new Key(keyName, key, keycap).generate();
     if (keyName === 'CapsLock') {
-      console.log(isCaps);
+      newKeycap.classList.add('virtualKeyboard__keycap-caps');
+      // подсветка кнопки капс
       if (isCaps) {
-        // console.log('add');
         newKeycap.classList.add('virtualKeyboard__keycap_active');
       } else {
         newKeycap.classList.remove('virtualKeyboard__keycap_active');
       }
-      newKeycap.classList.add('virtualKeyboard__keycap-caps');
+      // Капс ли?
       newKeycap.addEventListener('click', e => {
         isCaps = !isCaps;
         if (isCaps) {
           drowKeys(enKeysCaps);
-          // console.log('CAPS');
-          // newKeycap.classList.add('virtualKeyboard__keycap_active');
-          // isCaps = !isCaps;
         } else {
           drowKeys(enKeys);
-          // console.log('NOCAPS');
-          // newKeycap.classList.add('virtualKeyboard__keycap_active');
-          // isCaps = !isCaps;
         }
       });
     }
@@ -77,7 +71,6 @@ const drowKeys = function (keysMap) {
     if (keyName === 'Space') newKeycap.classList.add('virtualKeyboard__keycap-space');
     if (keyName === 'Enter') newKeycap.classList.add('virtualKeyboard__keycap-enter');
     if (keyName === 'ShiftLeft' || keyName === 'ShiftRight') newKeycap.classList.add('virtualKeyboard__keycap-shift');
-    // console.log(newKeycap);
     keyboardEl.append(newKeycap);
   }
 };
@@ -86,17 +79,12 @@ drowKeys(enKeys);
 
 document.addEventListener('keydown', e => {
   console.log(e);
-  // if (e.code === this._code) this._keycap.classList.add('virtualKeyboard__keycap_active');
   keyboardEl.querySelectorAll('.virtualKeyboard__keycap').forEach(element => {
-    // console.log(element.dataset.code);
     if (element.dataset.code === e.code) {
       element.classList.add('virtualKeyboard__keycap_active');
     }
   });
-  // const allButtons = keyboardEl.querySelectorAll('.virtualKeyboard__keycap');
-  // console.log(allButtons);
   if (e.code !== 'Backspace' && e.code !== 'Delete' && e.code !== 'CapsLock' && e.code !== 'Enter' && e.code !== 'ShiftLeft' && e.code !== 'ShiftRight' && e.code !== 'ControlLeft' && e.code !== 'MetaLeft' && e.code !== 'AltLeft' && e.code !== 'AltRight' && e.code !== 'ControlRight' && e.code !== 'Tab') {
-    // console.log(e.code);
     textArea.value += e.key;
   }
 });
@@ -106,5 +94,23 @@ document.addEventListener('keyup', e => {
       element.classList.remove('virtualKeyboard__keycap_active');
     }
   });
-  // if (e.code === this._code) this._keycap.classList.remove('virtualKeyboard__keycap_active');
+});
+
+document.addEventListener('keydown', event => {
+  if ((event.code === 'AltLeft' && event.shiftKey) || (event.shiftKey && event.altKey)) {
+    // выполнение кода при зажатии клавиш Shift + A
+    if (isCaps && isEng) {
+      drowKeys(ruKeysCaps);
+      isEng = !isEng;
+    } else if (!isCaps && isEng) {
+      drowKeys(ruKeys);
+      isEng = !isEng;
+    } else if (isCaps && !isEng) {
+      drowKeys(enKeysCaps);
+      isEng = !isEng;
+    } else if (!isCaps && !isEng) {
+      drowKeys(enKeys);
+      isEng = !isEng;
+    }
+  }
 });
