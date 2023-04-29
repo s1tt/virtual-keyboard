@@ -1,5 +1,5 @@
 import Key from '../components/Key.js';
-import { enKeys, enKeysCaps, ruKeys, ruKeysCaps } from '../utils/constants.js';
+import { enKeys, enKeysCaps, ruKeys, ruKeysCaps, enKeysShift, enKeysCapsShift } from '../utils/constants.js';
 
 let isCaps = sessionStorage.getItem('isCaps') === 'true' || false;
 let isEng = sessionStorage.getItem('isEng') === 'false' || false;
@@ -90,11 +90,27 @@ const drowKeys = function (keysMap) {
 
 document.addEventListener('keydown', e => {
   console.log(e);
+
   keyboardEl.querySelectorAll('.virtualKeyboard__keycap').forEach(element => {
     if (element.dataset.code === e.code) {
       element.classList.add('virtualKeyboard__keycap_active');
     }
   });
+
+  if (e.code === 'CapsLock') {
+    console.log(e.target.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`));
+    console.log('tik');
+    isCaps = !isCaps;
+    sessionStorage.setItem('isCaps', isCaps);
+    e.target.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`).classList.add('virtualKeyboard__keycap_active');
+  }
+
+  if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+    console.log(e.target.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`));
+    setLang(true);
+    e.target.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`).classList.add('virtualKeyboard__keycap_active');
+    console.log('DOWN');
+  }
   if (e.code !== 'Backspace' && e.code !== 'Delete' && e.code !== 'CapsLock' && e.code !== 'Enter' && e.code !== 'ShiftLeft' && e.code !== 'ShiftRight' && e.code !== 'ControlLeft' && e.code !== 'MetaLeft' && e.code !== 'AltLeft' && e.code !== 'AltRight' && e.code !== 'ControlRight' && e.code !== 'Tab') {
     textArea.value += e.key;
   }
@@ -104,11 +120,33 @@ document.addEventListener('keyup', e => {
     if (element.dataset.code === e.code) {
       element.classList.remove('virtualKeyboard__keycap_active');
     }
+    if (element.dataset.code === 'ShiftLeft' || element.dataset.code === 'ShiftRight') {
+      element.classList.remove('virtualKeyboard__keycap_active');
+      setLang(false);
+      console.log('UP');
+    }
   });
 });
 
-const setLang = function () {
-  if (isCaps && isEng) {
+const setLang = function (shift = null) {
+  if (shift) {
+    console.log('DA');
+    if (isCaps && isEng) {
+      drowKeys(enKeysCapsShift);
+    } else if (!isCaps && isEng) {
+      drowKeys(enKeysShift);
+
+      //
+    } else if (isCaps && !isEng) {
+      isEng = !isEng;
+      drowKeys(enKeysCaps);
+      sessionStorage.setItem('isEng', isEng);
+    } else if (!isCaps && !isEng) {
+      isEng = !isEng;
+      drowKeys(enKeys);
+      sessionStorage.setItem('isEng', isEng);
+    }
+  } else if (isCaps && isEng) {
     isEng = !isEng;
     drowKeys(ruKeysCaps);
     sessionStorage.setItem('isEng', isEng);
