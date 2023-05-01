@@ -44,5 +44,5 @@ virtualKeyboardSection.append(oprationSystem);
 
 export const commandForChangeLang = document.createElement('p');
 commandForChangeLang.className = 'virtualKeyboard__description';
-commandForChangeLang.textContent = 'To switch the language combination: left shift + alt';
+commandForChangeLang.textContent = 'To switch the language combination: Ctrl + Alt';
 virtualKeyboardSection.append(commandForChangeLang);

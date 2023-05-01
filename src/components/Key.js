@@ -25,6 +25,37 @@ export default class Key {
           this._textArea.value += '	';
           break;
         }
+        case 'ControlLeft': {
+          console.log('leftCtrl');
+          e.preventDefault();
+          break;
+        }
+        case 'ControlRight': {
+          console.log('ControlRight');
+          e.preventDefault();
+          break;
+        }
+        case 'AltLeft': {
+          console.log('AltLeft');
+          e.preventDefault();
+          break;
+        }
+        case 'AltRight': {
+          console.log('AltRight');
+          e.preventDefault();
+          break;
+        }
+        case 'MetaLeft': {
+          console.log('MetaLeft');
+          e.preventDefault();
+          break;
+        }
+        case 'Space': {
+          console.log('Space');
+          e.preventDefault();
+          this._textArea.value += ' ';
+          break;
+        }
         case 'Delete': {
           const cursorPosition = this._textArea.selectionStart;
           const currentValue = this._textArea.value;

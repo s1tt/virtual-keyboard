@@ -29,7 +29,17 @@ const drowKeys = function (keysMap) {
     if (keyName === 'Backspace') newKeycap.classList.add('virtualKeyboard__keycap-back');
     if (keyName === 'Space') newKeycap.classList.add('virtualKeyboard__keycap-space');
     if (keyName === 'Enter') newKeycap.classList.add('virtualKeyboard__keycap-enter');
-    if (keyName === 'ShiftLeft' || keyName === 'ShiftRight') newKeycap.classList.add('virtualKeyboard__keycap-shift');
+    if (keyName === 'ShiftLeft' || keyName === 'ShiftRight') {
+      newKeycap.classList.add('virtualKeyboard__keycap-shift');
+      newKeycap.addEventListener('mousedown', () => {
+        setShiftOn();
+        newKeycap.classList.add('virtualKeyboard__keycap_active');
+      });
+      newKeycap.addEventListener('mouseup', () => {
+        setShiftOff();
+        newKeycap.classList.remove('virtualKeyboard__keycap_active');
+      });
+    }
     keyboardEl.append(newKeycap);
   }
 };
@@ -72,8 +82,12 @@ document.addEventListener('keydown', e => {
     console.log('DOWN');
   }
   if (e.code !== 'Backspace' && e.code !== 'Delete' && e.code !== 'CapsLock' && e.code !== 'Enter' && e.code !== 'ShiftLeft' && e.code !== 'ShiftRight' && e.code !== 'ControlLeft' && e.code !== 'MetaLeft' && e.code !== 'AltLeft' && e.code !== 'AltRight' && e.code !== 'ControlRight' && e.code !== 'Tab') {
-    console.log(e.key);
-    textArea.value += e.key;
+    console.log(enKeys[e.key]);
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'ArrowUp' && e.key !== 'ArrowDown') {
+      textArea.value += e.key;
+    } else {
+      textArea.value += enKeys[e.key];
+    }
   }
 });
 document.addEventListener('keyup', e => {
@@ -123,7 +137,7 @@ const setShiftOn = function () {
   } else if (isCaps && !isEng) {
     drowKeys(ruKeysCapsShift);
   } else if (!isCaps && !isEng) {
-    drowKeys(ruKeysCaps);
+    drowKeys(ruKeysShift);
   }
 };
 
@@ -138,7 +152,7 @@ const setShiftOff = function () {
   } else if (isCaps && !isEng) {
     drowKeys(ruKeysCaps);
   } else if (!isCaps && !isEng) {
-    drowKeys(ruKeysCapsShift);
+    drowKeys(ruKeys);
   }
 };
 
