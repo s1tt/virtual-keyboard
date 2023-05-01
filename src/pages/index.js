@@ -148,29 +148,42 @@ const addKeyClass = (keyName, newKeycap) => {
   }
 };
 
-const printKey = function (event, key) {
+const printKey = function (event, keyCode) {
   event.preventDefault();
   keysCode.forEach(code => {
     if (code === event.code) {
+      let key;
+      //en
+      if (getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isShift')) {
+        key = enKeysCaps[keyCode];
+      } else if (getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isShift')) {
+        key = enKeys[keyCode];
+      } else if (getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps') && getValueFromSessionStore('isShift')) {
+        key = enKeysCapsShift[keyCode];
+      } else if (getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps') && getValueFromSessionStore('isShift')) {
+        key = enKeysShift[keyCode];
+      }
+      //rus
+      else if (!getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isShift')) {
+        key = ruKeysCaps[keyCode];
+      } else if (!getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isShift')) {
+        key = ruKeys[keyCode];
+      } else if (!getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps') && getValueFromSessionStore('isShift')) {
+        key = ruKeysCapsShift[keyCode];
+      } else if (!getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps') && getValueFromSessionStore('isShift')) {
+        key = ruKeysShift[keyCode];
+      }
       const start = textArea.selectionStart;
       const end = textArea.selectionEnd;
       const text = textArea.value;
       const newText = text.substring(0, start) + key + text.substring(end);
       textArea.value = newText;
-      textArea.selectionStart = textArea.selectionEnd = start + key.length;
+      textArea.selectionStart = textArea.selectionEnd = start + key.toString().length;
     }
   });
 };
 
-setLang();
-
-document.addEventListener('keydown', e => {
-  if (e.ctrlKey && e.altKey) {
-    changeLang();
-  }
-});
-
-document.addEventListener('keydown', e => {
+const hendleKeyDown = function (e) {
   keyboardEl.querySelectorAll('.virtualKeyboard__keycap').forEach(element => {
     if (element.dataset.code === e.code) {
       element.classList.add('virtualKeyboard__keycap_active');
@@ -280,13 +293,13 @@ document.addEventListener('keydown', e => {
       break;
     }
     default: {
-      printKey(e, e.key);
+      printKey(e, e.code);
       break;
     }
   }
-});
+};
 
-document.addEventListener('keyup', e => {
+const hendleKeyUp = function (e) {
   keyboardEl.querySelectorAll('.virtualKeyboard__keycap').forEach(element => {
     if (element.dataset.code === e.code && element.dataset.code !== 'CapsLock') {
       element.classList.remove('virtualKeyboard__keycap_active');
@@ -297,6 +310,20 @@ document.addEventListener('keyup', e => {
       }
     }
   });
-});
+};
+
+const hendleChangeLang = function (e) {
+  if (e.ctrlKey && e.altKey) {
+    changeLang();
+  }
+};
+
+setLang();
+
+document.addEventListener('keydown', hendleChangeLang);
+
+document.addEventListener('keydown', hendleKeyDown);
+
+document.addEventListener('keyup', hendleKeyUp);
 
 textArea.addEventListener('keydown', e => e.preventDefault());
