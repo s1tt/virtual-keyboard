@@ -148,14 +148,14 @@ const addKeyClass = (keyName, newKeycap) => {
   }
 };
 
-const printKey = function (event, key, spaces) {
+const printKey = function (event, key) {
   event.preventDefault();
   const start = textArea.selectionStart;
   const end = textArea.selectionEnd;
   const text = textArea.value;
   const newText = text.substring(0, start) + key + text.substring(end);
   textArea.value = newText;
-  textArea.selectionStart = textArea.selectionEnd = start + spaces;
+  textArea.selectionStart = textArea.selectionEnd = start + key.length;
 };
 
 setLang();
@@ -183,11 +183,11 @@ document.addEventListener('keydown', e => {
       break;
     }
     case 'Space': {
-      printKey(e, ' ', 1);
+      printKey(e, ' ');
       break;
     }
     case 'Tab': {
-      printKey(e, '    ', 4);
+      printKey(e, '    ');
       break;
     }
     case 'Backspace': {
@@ -209,7 +209,7 @@ document.addEventListener('keydown', e => {
       break;
     }
     case 'Enter': {
-      printKey(e, '\n', 1);
+      printKey(e, '\n');
       break;
     }
     case 'AltLeft': {
@@ -241,19 +241,19 @@ document.addEventListener('keydown', e => {
       break;
     }
     case 'ArrowLeft': {
-      printKey(e, enKeys[e.key], 1);
+      printKey(e, enKeys[e.key]);
       break;
     }
     case 'ArrowRight': {
-      printKey(e, enKeys[e.key], 1);
+      printKey(e, enKeys[e.key]);
       break;
     }
     case 'ArrowUp': {
-      printKey(e, enKeys[e.key], 1);
+      printKey(e, enKeys[e.key]);
       break;
     }
     case 'ArrowDown': {
-      printKey(e, enKeys[e.key], 1);
+      printKey(e, enKeys[e.key]);
       break;
     }
     case 'MetaLeft': {
@@ -261,7 +261,8 @@ document.addEventListener('keydown', e => {
       break;
     }
     default: {
-      printKey(e, e.key, 1);
+      console.log('Tyt');
+      printKey(e, e.key);
       break;
     }
   }

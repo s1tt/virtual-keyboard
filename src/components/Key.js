@@ -15,7 +15,7 @@ export default class Key {
         this._textArea.selectionEnd = cursorPosition - 1;
       },
       Tab: e => {
-        this.printKey(e, '    ', 4);
+        this.printKey(e, '    ');
       },
       ControlLeft: e => {
         e.preventDefault();
@@ -33,7 +33,7 @@ export default class Key {
         e.preventDefault();
       },
       Space: e => {
-        this.printKey(e, ' ', 1);
+        this.printKey(e, ' ');
       },
       Delete: () => {
         const cursorPosition = this._textArea.selectionStart;
@@ -44,7 +44,7 @@ export default class Key {
         this._textArea.selectionEnd = cursorPosition;
       },
       Enter: e => {
-        this.printKey(e, '\n', 1);
+        this.printKey(e, '\n');
       },
       CapsLock: () => {
         this._keycap.classList.toggle('virtualKeyboard__keycap_active');
@@ -56,7 +56,7 @@ export default class Key {
         e.preventDefault();
       },
       default: e => {
-        this.printKey(e, this._key, 1);
+        this.printKey(e, this._key);
       }
     };
   }
