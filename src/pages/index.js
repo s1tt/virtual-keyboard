@@ -153,25 +153,42 @@ const printKey = function (event, keyCode) {
   keysCode.forEach(code => {
     if (code === event.code) {
       let key;
-      //en
-      if (getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isShift')) {
-        key = enKeysCaps[keyCode];
-      } else if (getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isShift')) {
-        key = enKeys[keyCode];
-      } else if (getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps') && getValueFromSessionStore('isShift')) {
-        key = enKeysCapsShift[keyCode];
-      } else if (getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps') && getValueFromSessionStore('isShift')) {
-        key = enKeysShift[keyCode];
-      }
-      //rus
-      else if (!getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isShift')) {
-        key = ruKeysCaps[keyCode];
-      } else if (!getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isShift')) {
-        key = ruKeys[keyCode];
-      } else if (!getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps') && getValueFromSessionStore('isShift')) {
-        key = ruKeysCapsShift[keyCode];
-      } else if (!getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps') && getValueFromSessionStore('isShift')) {
-        key = ruKeysShift[keyCode];
+
+      switch (keyCode) {
+        case 'Space': {
+          key = ' ';
+          break;
+        }
+        case 'Tab': {
+          key = '    ';
+          break;
+        }
+        case 'Enter': {
+          key = '\n';
+          break;
+        }
+        default: {
+          //en
+          if (getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isShift')) {
+            key = enKeysCaps[keyCode];
+          } else if (getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isShift')) {
+            key = enKeys[keyCode];
+          } else if (getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps') && getValueFromSessionStore('isShift')) {
+            key = enKeysCapsShift[keyCode];
+          } else if (getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps') && getValueFromSessionStore('isShift')) {
+            key = enKeysShift[keyCode];
+          }
+          //rus
+          else if (!getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isShift')) {
+            key = ruKeysCaps[keyCode];
+          } else if (!getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isShift')) {
+            key = ruKeys[keyCode];
+          } else if (!getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps') && getValueFromSessionStore('isShift')) {
+            key = ruKeysCapsShift[keyCode];
+          } else if (!getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps') && getValueFromSessionStore('isShift')) {
+            key = ruKeysShift[keyCode];
+          }
+        }
       }
       const start = textArea.selectionStart;
       const end = textArea.selectionEnd;
@@ -200,11 +217,11 @@ const hendleKeyDown = function (e) {
       break;
     }
     case 'Space': {
-      printKey(e, ' ');
+      printKey(e, e.code);
       break;
     }
     case 'Tab': {
-      printKey(e, '    ');
+      printKey(e, e.code);
       break;
     }
     case 'Backspace': {
@@ -241,7 +258,7 @@ const hendleKeyDown = function (e) {
       break;
     }
     case 'Enter': {
-      printKey(e, '\n');
+      printKey(e, e.code);
       break;
     }
     case 'AltLeft': {
@@ -273,19 +290,19 @@ const hendleKeyDown = function (e) {
       break;
     }
     case 'ArrowLeft': {
-      printKey(e, enKeys[e.key]);
+      printKey(e, e.code);
       break;
     }
     case 'ArrowRight': {
-      printKey(e, enKeys[e.key]);
+      printKey(e, e.code);
       break;
     }
     case 'ArrowUp': {
-      printKey(e, enKeys[e.key]);
+      printKey(e, e.code);
       break;
     }
     case 'ArrowDown': {
-      printKey(e, enKeys[e.key]);
+      printKey(e, e.code);
       break;
     }
     case 'MetaLeft': {
