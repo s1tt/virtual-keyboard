@@ -533,3 +533,5 @@ export const ruKeysCapsShift = {
   ArrowRight: '→',
   ControlRight: 'Ctrl'
 };
+
+export const keysCode = Object.entries(enKeys).map(([key, value]) => key);

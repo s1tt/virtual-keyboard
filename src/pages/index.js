@@ -1,5 +1,5 @@
 import Key from '../components/Key.js';
-import { enKeys, enKeysCaps, ruKeys, ruKeysCaps, enKeysShift, enKeysCapsShift, ruKeysShift, ruKeysCapsShift } from '../utils/constants.js';
+import { enKeys, enKeysCaps, ruKeys, ruKeysCaps, enKeysShift, enKeysCapsShift, ruKeysShift, ruKeysCapsShift, keysCode } from '../utils/constants.js';
 import { textArea, keyboardEl, keyTemplate, body } from '../utils/elements.js';
 
 const setValueToSessionStore = function (variable, value) {
@@ -150,12 +150,16 @@ const addKeyClass = (keyName, newKeycap) => {
 
 const printKey = function (event, key) {
   event.preventDefault();
-  const start = textArea.selectionStart;
-  const end = textArea.selectionEnd;
-  const text = textArea.value;
-  const newText = text.substring(0, start) + key + text.substring(end);
-  textArea.value = newText;
-  textArea.selectionStart = textArea.selectionEnd = start + key.length;
+  keysCode.forEach(code => {
+    if (code === event.code) {
+      const start = textArea.selectionStart;
+      const end = textArea.selectionEnd;
+      const text = textArea.value;
+      const newText = text.substring(0, start) + key + text.substring(end);
+      textArea.value = newText;
+      textArea.selectionStart = textArea.selectionEnd = start + key.length;
+    }
+  });
 };
 
 setLang();
@@ -261,7 +265,6 @@ document.addEventListener('keydown', e => {
       break;
     }
     default: {
-      console.log('Tyt');
       printKey(e, e.key);
       break;
     }
