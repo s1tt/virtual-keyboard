@@ -29,7 +29,7 @@ const clearKeyboard = () => {
 
 const createKey = (keyName, key) => {
   const keycap = keyTemplate.cloneNode(true);
-  const newKeycap = new Key(keyName, key, keycap, printKey).generate();
+  const newKeycap = new Key(keyName, key, keycap).generate();
   addKeyClass(keyName, newKeycap);
   keyboardEl.append(newKeycap);
 };

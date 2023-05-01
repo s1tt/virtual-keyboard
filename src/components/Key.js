@@ -3,8 +3,16 @@ export default class Key {
     this._code = code;
     this._key = key;
     this._keycap = keycap;
-    this.printKey = printKey;
     this._textArea = document.querySelector('.virtualKeyboard__textArea');
+    this._printKey = function (event, key) {
+      event.preventDefault();
+      const start = this._textArea.selectionStart;
+      const end = this._textArea.selectionEnd;
+      const text = this._textArea.value;
+      const newText = text.substring(0, start) + key + text.substring(end);
+      this._textArea.value = newText;
+      this._textArea.selectionStart = this._textArea.selectionEnd = start + key.length;
+    };
     this._handlers = {
       Backspace: () => {
         const cursorPosition = this._textArea.selectionStart;
@@ -15,7 +23,7 @@ export default class Key {
         this._textArea.selectionEnd = cursorPosition - 1;
       },
       Tab: e => {
-        this.printKey(e, '    ');
+        this._printKey(e, '    ');
       },
       ControlLeft: e => {
         e.preventDefault();
@@ -33,7 +41,7 @@ export default class Key {
         e.preventDefault();
       },
       Space: e => {
-        this.printKey(e, ' ');
+        this._printKey(e, ' ');
       },
       Delete: () => {
         const cursorPosition = this._textArea.selectionStart;
@@ -44,7 +52,7 @@ export default class Key {
         this._textArea.selectionEnd = cursorPosition;
       },
       Enter: e => {
-        this.printKey(e, '\n');
+        this._printKey(e, '\n');
       },
       CapsLock: () => {
         this._keycap.classList.toggle('virtualKeyboard__keycap_active');
@@ -56,10 +64,20 @@ export default class Key {
         e.preventDefault();
       },
       default: e => {
-        this.printKey(e, this._key);
+        this._printKey(e, this._key);
       }
     };
   }
+
+  // _printKey(event, key) {
+  //   event.preventDefault();
+  //   const start = this._textArea.selectionStart;
+  //   const end = this._textArea.selectionEnd;
+  //   const text = this._textArea.value;
+  //   const newText = text.substring(0, start) + key + text.substring(end);
+  //   this._textArea.value = newText;
+  //   this._textArea.selectionStart = this._textArea.selectionEnd = start + key.length;
+  // }
 
   generate() {
     this._keycap.querySelector('.virtualKeyboard__keycap-simbol').textContent = this._key;
