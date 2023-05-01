@@ -209,12 +209,22 @@ document.addEventListener('keydown', e => {
       break;
     }
     case 'Delete': {
-      const cursorPosition = textArea.selectionStart;
-      const currentValue = textArea.value;
-      const updatedValue = currentValue.slice(0, cursorPosition) + currentValue.slice(cursorPosition + 1);
-      textArea.value = updatedValue;
-      textArea.selectionStart = cursorPosition;
-      textArea.selectionEnd = cursorPosition;
+      const start = textArea.selectionStart;
+      const end = textArea.selectionEnd;
+      if (start === end) {
+        // если ничего не выделено, удаляем один символ после курсора
+        const currentValue = textArea.value;
+        const updatedValue = currentValue.slice(0, start) + currentValue.slice(start + 1);
+        textArea.value = updatedValue;
+        textArea.selectionStart = start;
+        textArea.selectionEnd = start;
+      } else {
+        // если выделен текст, удаляем его
+        const text = textArea.value;
+        const newText = text.substring(0, start) + text.substring(end);
+        textArea.value = newText;
+        textArea.selectionStart = textArea.selectionEnd = start;
+      }
       break;
     }
     case 'Enter': {

@@ -50,12 +50,22 @@ export default class Key {
         this._printKey(e, ' ');
       },
       Delete: () => {
-        const cursorPosition = this._textArea.selectionStart;
-        const currentValue = this._textArea.value;
-        const updatedValue = currentValue.slice(0, cursorPosition) + currentValue.slice(cursorPosition + 1);
-        this._textArea.value = updatedValue;
-        this._textArea.selectionStart = cursorPosition;
-        this._textArea.selectionEnd = cursorPosition;
+        const start = this._textArea.selectionStart;
+        const end = this._textArea.selectionEnd;
+        if (start === end) {
+          // если ничего не выделено, удаляем один символ после курсора
+          const currentValue = this._textArea.value;
+          const updatedValue = currentValue.slice(0, start) + currentValue.slice(start + 1);
+          this._textArea.value = updatedValue;
+          this._textArea.selectionStart = start;
+          this._textArea.selectionEnd = start;
+        } else {
+          // если выделен текст, удаляем его
+          const text = this._textArea.value;
+          const newText = text.substring(0, start) + text.substring(end);
+          this._textArea.value = newText;
+          this._textArea.selectionStart = this._textArea.selectionEnd = start;
+        }
       },
       Enter: e => {
         this._printKey(e, '\n');
