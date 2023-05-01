@@ -29,7 +29,7 @@ const clearKeyboard = () => {
 
 const createKey = (keyName, key) => {
   const keycap = keyTemplate.cloneNode(true);
-  const newKeycap = new Key(keyName, key, keycap).generate();
+  const newKeycap = new Key(keyName, key, keycap, printKey).generate();
   addKeyClass(keyName, newKeycap);
   keyboardEl.append(newKeycap);
 };
@@ -42,7 +42,6 @@ const drowKeys = keysMap => {
 };
 
 const setCapsOn = function () {
-  // isCaps = true;
   sessionStorage.setItem('isCaps', true);
   if (getValueFromSessionStore('isEng')) {
     drowKeys(enKeysCaps);
@@ -52,7 +51,6 @@ const setCapsOn = function () {
 };
 
 const setCapsOff = function () {
-  // isCaps = false;
   sessionStorage.setItem('isCaps', false);
   if (getValueFromSessionStore('isEng')) {
     drowKeys(enKeys);
@@ -62,13 +60,11 @@ const setCapsOff = function () {
 };
 
 const setShiftOn = function () {
-  // isShift = true;
   sessionStorage.setItem('isShift', true);
   if (getValueFromSessionStore('isCaps') && getValueFromSessionStore('isEng')) {
     drowKeys(enKeysCapsShift);
   } else if (!getValueFromSessionStore('isCaps') && getValueFromSessionStore('isEng')) {
     drowKeys(enKeysShift);
-    //
   } else if (getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isEng')) {
     drowKeys(ruKeysCapsShift);
   } else if (!getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isEng')) {
@@ -77,13 +73,11 @@ const setShiftOn = function () {
 };
 
 const setShiftOff = function () {
-  // isShift = false;
   sessionStorage.setItem('isShift', false);
   if (getValueFromSessionStore('isCaps') && getValueFromSessionStore('isEng')) {
     drowKeys(enKeysCaps);
   } else if (!getValueFromSessionStore('isCaps') && getValueFromSessionStore('isEng')) {
     drowKeys(enKeys);
-    //
   } else if (getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isEng')) {
     drowKeys(ruKeysCaps);
   } else if (!getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isEng')) {
@@ -105,7 +99,6 @@ const setLang = function () {
 };
 
 const changeLang = function () {
-  // isEng = !isEng;
   sessionStorage.setItem('isEng', !getValueFromSessionStore('isEng'));
   setLang();
 };
@@ -169,7 +162,6 @@ setLang();
 
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.altKey) {
-    // Смена языка
     changeLang();
   }
 });
@@ -264,7 +256,7 @@ document.addEventListener('keydown', e => {
       printKey(e, enKeys[e.key], 1);
       break;
     }
-    case 'Meta': {
+    case 'MetaLeft': {
       e.preventDefault();
       break;
     }

@@ -39,10 +39,10 @@ keyTemplate.append(keySimbol);
 
 export const oprationSystem = document.createElement('p');
 oprationSystem.className = 'virtualKeyboard__description';
-oprationSystem.textContent = 'Keyboard created in the Windows operating system';
+oprationSystem.textContent = 'The keyboard created on the Windows OS';
 virtualKeyboardSection.append(oprationSystem);
 
 export const commandForChangeLang = document.createElement('p');
 commandForChangeLang.className = 'virtualKeyboard__description';
-commandForChangeLang.textContent = 'To switch the language combination: Ctrl + Alt';
+commandForChangeLang.textContent = 'To switch the language: Ctrl + Alt';
 virtualKeyboardSection.append(commandForChangeLang);

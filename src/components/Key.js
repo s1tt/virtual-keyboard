@@ -1,8 +1,9 @@
 export default class Key {
-  constructor(code, key, keycap) {
+  constructor(code, key, keycap, printKey) {
     this._code = code;
     this._key = key;
     this._keycap = keycap;
+    this.printKey = printKey;
     this._textArea = document.querySelector('.virtualKeyboard__textArea');
     this._handlers = {
       Backspace: () => {
@@ -14,13 +15,7 @@ export default class Key {
         this._textArea.selectionEnd = cursorPosition - 1;
       },
       Tab: e => {
-        e.preventDefault();
-        const start = this._textArea.selectionStart;
-        const end = this._textArea.selectionEnd;
-        const text = this._textArea.value;
-        const newText = text.substring(0, start) + '	' + text.substring(end);
-        this._textArea.value = newText;
-        this._textArea.selectionStart = this._textArea.selectionEnd = start + 1;
+        this.printKey(e, '    ', 4);
       },
       ControlLeft: e => {
         e.preventDefault();
@@ -38,13 +33,7 @@ export default class Key {
         e.preventDefault();
       },
       Space: e => {
-        e.preventDefault();
-        const start = this._textArea.selectionStart;
-        const end = this._textArea.selectionEnd;
-        const text = this._textArea.value;
-        const newText = text.substring(0, start) + ' ' + text.substring(end);
-        this._textArea.value = newText;
-        this._textArea.selectionStart = this._textArea.selectionEnd = start + 1;
+        this.printKey(e, ' ', 1);
       },
       Delete: () => {
         const cursorPosition = this._textArea.selectionStart;
@@ -54,14 +43,20 @@ export default class Key {
         this._textArea.selectionStart = cursorPosition;
         this._textArea.selectionEnd = cursorPosition;
       },
-      Enter: () => {
-        this._textArea.value += '\n';
+      Enter: e => {
+        this.printKey(e, '\n', 1);
       },
       CapsLock: () => {
         this._keycap.classList.toggle('virtualKeyboard__keycap_active');
       },
-      default: () => {
-        this._textArea.value += this._key;
+      ShiftRight: e => {
+        e.preventDefault();
+      },
+      ShiftLeft: e => {
+        e.preventDefault();
+      },
+      default: e => {
+        this.printKey(e, this._key, 1);
       }
     };
   }
