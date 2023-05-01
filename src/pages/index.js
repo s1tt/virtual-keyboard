@@ -105,6 +105,12 @@ document.addEventListener('keydown', e => {
     e.target.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`).classList.add('virtualKeyboard__keycap_active');
   }
 
+  if (e.code === 'Tab') {
+    console.log('TAB');
+    e.preventDefault();
+    textArea.value += '	';
+  }
+
   if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
     console.log(e.target.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`));
     setLang(true);
@@ -142,8 +148,9 @@ const setLang = function (shift = null) {
       drowKeys(enKeysCaps);
       sessionStorage.setItem('isEng', isEng);
     } else if (!isCaps && !isEng) {
-      isEng = !isEng;
-      drowKeys(enKeys);
+      console.log('!!');
+      // isEng = !isEng;
+      drowKeys(ruKeysCaps);
       sessionStorage.setItem('isEng', isEng);
     }
   } else if (isCaps && isEng) {

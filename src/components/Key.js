@@ -8,7 +8,7 @@ export default class Key {
 
   generate() {
     this._keycap.querySelector('.virtualKeyboard__keycap-simbol').textContent = this._key;
-    this._keycap.addEventListener('click', () => {
+    this._keycap.addEventListener('click', e => {
       switch (this._code) {
         case 'Backspace': {
           const cursorPosition = this._textArea.selectionStart;
@@ -20,6 +20,8 @@ export default class Key {
           break;
         }
         case 'Tab': {
+          console.log('TAB');
+          e.preventDefault();
           this._textArea.value += '	';
           break;
         }

@@ -1,10 +1,20 @@
 .virtualKeyboard__keycap {
+  position: relative;
+  left: 0;
+  top: 0;
   width: 40px;
   height: 40px;
   background-color: white;
   cursor: pointer;
+  transition: all 0.3s;
 }
 
 .virtualKeyboard__keycap:hover {
   background-color: wheat;
+}
+
+.virtualKeyboard__keycap:active {
+  left: 3px;
+  top: 3px;
+  background-color: aqua;
 }
