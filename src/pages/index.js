@@ -4,31 +4,26 @@ import { body, header, mainTitle, main, virtualKeyboardSection, textArea, keyboa
 
 let isCaps = sessionStorage.getItem('isCaps') === 'true' || false;
 let isShift = sessionStorage.getItem('isShift') === 'true' || false;
-let isEng = sessionStorage.getItem('isEng') === 'false' || false;
+let isEng = sessionStorage.getItem('isEng') === 'false' || true;
+
+textArea.addEventListener('keydown', e => e.preventDefault());
 
 const drowKeys = function (keysMap) {
+  console.log(isCaps);
+  console.log(isShift);
+  console.log(isEng);
   Array.from(keyboardEl.children).forEach(el => el.remove());
   for (const [keyName, key] of Object.entries(keysMap)) {
     const keycap = keyTemplate.cloneNode(true);
     const newKeycap = new Key(keyName, key, keycap).generate();
     if (keyName === 'CapsLock') {
       newKeycap.classList.add('virtualKeyboard__keycap-caps');
-      // подсветка кнопки капс
+      // подсветка кнопки капс при перезагрузке
       if (isCaps) {
         newKeycap.classList.add('virtualKeyboard__keycap_active');
       } else {
         newKeycap.classList.remove('virtualKeyboard__keycap_active');
       }
-      // Капс ли?
-      newKeycap.addEventListener('click', e => {
-        isCaps = !isCaps;
-        sessionStorage.setItem('isCaps', isCaps);
-        if (isCaps) {
-          drowKeys(enKeysCaps);
-        } else {
-          drowKeys(enKeys);
-        }
-      });
     }
     if (keyName === 'Tab') newKeycap.classList.add('virtualKeyboard__keycap-tab');
     if (keyName === 'Backspace') newKeycap.classList.add('virtualKeyboard__keycap-back');
@@ -42,8 +37,6 @@ const drowKeys = function (keysMap) {
 // drowKeys(enKeys);
 
 document.addEventListener('keydown', e => {
-  console.log(e);
-
   keyboardEl.querySelectorAll('.virtualKeyboard__keycap').forEach(element => {
     if (element.dataset.code === e.code) {
       element.classList.add('virtualKeyboard__keycap_active');
@@ -53,9 +46,12 @@ document.addEventListener('keydown', e => {
   if (e.code === 'CapsLock') {
     console.log(e.target.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`));
     console.log('tik');
-    isCaps = !isCaps;
-    sessionStorage.setItem('isCaps', isCaps);
-    e.target.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`).classList.toggle('virtualKeyboard__keycap_active');
+    if (!isCaps) {
+      setCapsOn();
+    } else {
+      setCapsOff();
+    }
+    // e.target.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`).classList.toggle('virtualKeyboard__keycap_active');
   }
 
   if (e.code === 'Tab') {
@@ -83,7 +79,7 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keyup', e => {
   keyboardEl.querySelectorAll('.virtualKeyboard__keycap').forEach(element => {
     if (element.dataset.code === e.code && element.dataset.code !== 'CapsLock') {
-      console.log('a');
+      console.log(e.code);
       element.classList.remove('virtualKeyboard__keycap_active');
 
       if (element.dataset.code === 'ShiftLeft' || element.dataset.code === 'ShiftRight') {
@@ -94,6 +90,26 @@ document.addEventListener('keyup', e => {
     }
   });
 });
+
+const setCapsOn = function () {
+  isCaps = true;
+  sessionStorage.setItem('isCaps', isCaps);
+  if (isEng) {
+    drowKeys(enKeysCaps);
+  } else {
+    drowKeys(ruKeysCaps);
+  }
+};
+
+const setCapsOff = function () {
+  isCaps = false;
+  sessionStorage.setItem('isCaps', isCaps);
+  if (isEng) {
+    drowKeys(enKeys);
+  } else {
+    drowKeys(ruKeys);
+  }
+};
 
 const setShiftOn = function () {
   console.log('DA');
@@ -115,9 +131,9 @@ const setShiftOff = function () {
   isShift = false;
   sessionStorage.setItem('isShift', isShift);
   if (isCaps && isEng) {
-    drowKeys(enKeysShift);
+    drowKeys(enKeysCaps);
   } else if (!isCaps && isEng) {
-    drowKeys(enKeysCapsShift);
+    drowKeys(enKeys);
     //
   } else if (isCaps && !isEng) {
     drowKeys(ruKeysCaps);
@@ -127,24 +143,27 @@ const setShiftOff = function () {
 };
 
 const setLang = function () {
-  console.log('setLang');
-  isEng = !isEng;
-  sessionStorage.setItem('isEng', isEng);
-  if (isCaps && isEng) {
+  if (isEng && isCaps) {
+    console.log('setLang');
     drowKeys(ruKeysCaps);
-  } else if (!isCaps && isEng) {
+  } else if (isEng && !isCaps) {
+    console.log('setLang');
     drowKeys(ruKeys);
-  } else if (isCaps && !isEng) {
+  } else if (!isEng && isCaps) {
+    console.log('setLang');
     drowKeys(enKeysCaps);
-  } else if (!isCaps && !isEng) {
+  } else if (!isEng && !isCaps) {
+    console.log('setLang');
     drowKeys(enKeys);
   }
+  isEng = !isEng;
+  sessionStorage.setItem('isEng', isEng);
 };
 
-setLang();
+drowKeys(enKeys);
 
 document.addEventListener('keydown', event => {
-  if ((event.code === 'AltLeft' && event.shiftKey) || (event.shiftKey && event.altKey)) {
+  if (event.ctrlKey && event.altKey) {
     // Смена языка
     console.log('!!');
     setLang();
