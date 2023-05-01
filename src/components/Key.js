@@ -11,16 +11,22 @@ export default class Key {
       const text = this._textArea.value;
       const newText = text.substring(0, start) + key + text.substring(end);
       this._textArea.value = newText;
-      this._textArea.selectionStart = this._textArea.selectionEnd = start + key.length;
+      this._textArea.selectionStart = this._textArea.selectionEnd = start + key.toString().length;
     };
     this._handlers = {
-      Backspace: () => {
+      Backspace: e => {
+        e.preventDefault();
         const cursorPosition = this._textArea.selectionStart;
+        const endPosition = this._textArea.selectionEnd;
         const currentValue = this._textArea.value;
-        const updatedValue = currentValue.slice(0, cursorPosition - 1) + currentValue.slice(cursorPosition);
-        this._textArea.value = updatedValue;
-        this._textArea.selectionStart = cursorPosition - 1;
-        this._textArea.selectionEnd = cursorPosition - 1;
+        if (cursorPosition === 0 && endPosition === currentValue.length) {
+          this._textArea.value = '';
+        } else {
+          const updatedValue = currentValue.slice(0, cursorPosition - 1) + currentValue.slice(endPosition);
+          this._textArea.value = updatedValue;
+          this._textArea.selectionStart = cursorPosition - 1;
+          this._textArea.selectionEnd = cursorPosition - 1;
+        }
       },
       Tab: e => {
         this._printKey(e, '    ');
@@ -68,16 +74,6 @@ export default class Key {
       }
     };
   }
-
-  // _printKey(event, key) {
-  //   event.preventDefault();
-  //   const start = this._textArea.selectionStart;
-  //   const end = this._textArea.selectionEnd;
-  //   const text = this._textArea.value;
-  //   const newText = text.substring(0, start) + key + text.substring(end);
-  //   this._textArea.value = newText;
-  //   this._textArea.selectionStart = this._textArea.selectionEnd = start + key.length;
-  // }
 
   generate() {
     this._keycap.querySelector('.virtualKeyboard__keycap-simbol').textContent = this._key;

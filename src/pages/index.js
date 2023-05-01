@@ -196,11 +196,16 @@ document.addEventListener('keydown', e => {
     }
     case 'Backspace': {
       const cursorPosition = textArea.selectionStart;
+      const endPosition = textArea.selectionEnd;
       const currentValue = textArea.value;
-      const updatedValue = currentValue.slice(0, cursorPosition - 1) + currentValue.slice(cursorPosition);
-      textArea.value = updatedValue;
-      textArea.selectionStart = cursorPosition - 1;
-      textArea.selectionEnd = cursorPosition - 1;
+      if (cursorPosition === 0 && endPosition === currentValue.length) {
+        textArea.value = '';
+      } else {
+        const updatedValue = currentValue.slice(0, cursorPosition - 1) + currentValue.slice(endPosition);
+        textArea.value = updatedValue;
+        textArea.selectionStart = cursorPosition - 1;
+        textArea.selectionEnd = cursorPosition - 1;
+      }
       break;
     }
     case 'Delete': {
