@@ -15,7 +15,12 @@ export default class Key {
       },
       Tab: e => {
         e.preventDefault();
-        this._textArea.value += '	';
+        const start = this._textArea.selectionStart;
+        const end = this._textArea.selectionEnd;
+        const text = this._textArea.value;
+        const newText = text.substring(0, start) + '	' + text.substring(end);
+        this._textArea.value = newText;
+        this._textArea.selectionStart = this._textArea.selectionEnd = start + 1;
       },
       ControlLeft: e => {
         e.preventDefault();
@@ -34,7 +39,12 @@ export default class Key {
       },
       Space: e => {
         e.preventDefault();
-        this._textArea.value += ' ';
+        const start = this._textArea.selectionStart;
+        const end = this._textArea.selectionEnd;
+        const text = this._textArea.value;
+        const newText = text.substring(0, start) + ' ' + text.substring(end);
+        this._textArea.value = newText;
+        this._textArea.selectionStart = this._textArea.selectionEnd = start + 1;
       },
       Delete: () => {
         const cursorPosition = this._textArea.selectionStart;

@@ -1,10 +1,25 @@
 import Key from '../components/Key.js';
 import { enKeys, enKeysCaps, ruKeys, ruKeysCaps, enKeysShift, enKeysCapsShift, ruKeysShift, ruKeysCapsShift } from '../utils/constants.js';
-import { textArea, keyboardEl, keyTemplate } from '../utils/elements.js';
+import { textArea, keyboardEl, keyTemplate, body } from '../utils/elements.js';
 
-let isCaps = sessionStorage.getItem('isCaps') === 'true' || false;
-let isShift = sessionStorage.getItem('isShift') === 'true' || false;
-let isEng = sessionStorage.getItem('isEng') === 'false' || true;
+const setValueToSessionStore = function (variable, value) {
+  sessionStorage.setItem(variable, value);
+};
+
+const getValueFromSessionStore = function (variable) {
+  return sessionStorage.getItem(variable) === 'true';
+};
+
+//установка значений по умолчанию, если нет таких переменных в хранилище
+const setStartingValuesToSessionStorage = function () {
+  if (getValueFromSessionStore('isCaps') === 'undefined') {
+    setValueToSessionStore('isCaps', false);
+  } else if (getValueFromSessionStore('isShift') === 'undefined') {
+    setValueToSessionStore('isShift', false);
+  } else if (getValueFromSessionStore('isEng') === 'undefined') {
+    setValueToSessionStore('isEng', true);
+  }
+};
 
 const clearKeyboard = () => {
   while (keyboardEl.firstChild) {
@@ -27,9 +42,9 @@ const drowKeys = keysMap => {
 };
 
 const setCapsOn = function () {
-  isCaps = true;
-  sessionStorage.setItem('isCaps', isCaps);
-  if (isEng) {
+  // isCaps = true;
+  sessionStorage.setItem('isCaps', true);
+  if (getValueFromSessionStore('isEng')) {
     drowKeys(enKeysCaps);
   } else {
     drowKeys(ruKeysCaps);
@@ -37,9 +52,9 @@ const setCapsOn = function () {
 };
 
 const setCapsOff = function () {
-  isCaps = false;
-  sessionStorage.setItem('isCaps', isCaps);
-  if (isEng) {
+  // isCaps = false;
+  sessionStorage.setItem('isCaps', false);
+  if (getValueFromSessionStore('isEng')) {
     drowKeys(enKeys);
   } else {
     drowKeys(ruKeys);
@@ -47,54 +62,59 @@ const setCapsOff = function () {
 };
 
 const setShiftOn = function () {
-  isShift = true;
-  sessionStorage.setItem('isShift', isShift);
-  if (isCaps && isEng) {
+  // isShift = true;
+  sessionStorage.setItem('isShift', true);
+  if (getValueFromSessionStore('isCaps') && getValueFromSessionStore('isEng')) {
     drowKeys(enKeysCapsShift);
-  } else if (!isCaps && isEng) {
+  } else if (!getValueFromSessionStore('isCaps') && getValueFromSessionStore('isEng')) {
     drowKeys(enKeysShift);
     //
-  } else if (isCaps && !isEng) {
+  } else if (getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isEng')) {
     drowKeys(ruKeysCapsShift);
-  } else if (!isCaps && !isEng) {
+  } else if (!getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isEng')) {
     drowKeys(ruKeysShift);
   }
 };
 
 const setShiftOff = function () {
-  isShift = false;
-  sessionStorage.setItem('isShift', isShift);
-  if (isCaps && isEng) {
+  // isShift = false;
+  sessionStorage.setItem('isShift', false);
+  if (getValueFromSessionStore('isCaps') && getValueFromSessionStore('isEng')) {
     drowKeys(enKeysCaps);
-  } else if (!isCaps && isEng) {
+  } else if (!getValueFromSessionStore('isCaps') && getValueFromSessionStore('isEng')) {
     drowKeys(enKeys);
     //
-  } else if (isCaps && !isEng) {
+  } else if (getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isEng')) {
     drowKeys(ruKeysCaps);
-  } else if (!isCaps && !isEng) {
+  } else if (!getValueFromSessionStore('isCaps') && !getValueFromSessionStore('isEng')) {
     drowKeys(ruKeys);
   }
 };
 
 const setLang = function () {
-  if (isEng && isCaps) {
-    drowKeys(ruKeysCaps);
-  } else if (isEng && !isCaps) {
-    drowKeys(ruKeys);
-  } else if (!isEng && isCaps) {
+  setStartingValuesToSessionStorage();
+  if (getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps')) {
     drowKeys(enKeysCaps);
-  } else if (!isEng && !isCaps) {
+  } else if (getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps')) {
     drowKeys(enKeys);
+  } else if (!getValueFromSessionStore('isEng') && getValueFromSessionStore('isCaps')) {
+    drowKeys(ruKeysCaps);
+  } else if (!getValueFromSessionStore('isEng') && !getValueFromSessionStore('isCaps')) {
+    drowKeys(ruKeys);
   }
-  isEng = !isEng;
-  sessionStorage.setItem('isEng', isEng);
+};
+
+const changeLang = function () {
+  // isEng = !isEng;
+  sessionStorage.setItem('isEng', !getValueFromSessionStore('isEng'));
+  setLang();
 };
 
 const addKeyClass = (keyName, newKeycap) => {
   switch (keyName) {
     case 'CapsLock':
       newKeycap.classList.add('virtualKeyboard__keycap-caps');
-      if (isCaps) {
+      if (getValueFromSessionStore('isCaps')) {
         newKeycap.addEventListener('mousedown', () => {
           setCapsOff();
         });
@@ -135,12 +155,22 @@ const addKeyClass = (keyName, newKeycap) => {
   }
 };
 
-drowKeys(enKeys);
+const printKey = function (event, key, spaces) {
+  event.preventDefault();
+  const start = textArea.selectionStart;
+  const end = textArea.selectionEnd;
+  const text = textArea.value;
+  const newText = text.substring(0, start) + key + text.substring(end);
+  textArea.value = newText;
+  textArea.selectionStart = textArea.selectionEnd = start + spaces;
+};
+
+setLang();
 
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.altKey) {
     // Смена языка
-    setLang();
+    changeLang();
   }
 });
 
@@ -151,32 +181,96 @@ document.addEventListener('keydown', e => {
     }
   });
 
-  if (e.code === 'CapsLock') {
-    if (!isCaps) {
-      setCapsOn();
-    } else {
-      setCapsOff();
+  switch (e.code) {
+    case 'CapsLock': {
+      if (!getValueFromSessionStore('isCaps')) {
+        setCapsOn();
+      } else {
+        setCapsOff();
+      }
+      break;
     }
-  }
-
-  if (e.code === 'Tab') {
-    e.preventDefault();
-    textArea.value += '	';
-  }
-
-  if ((e.code === 'ShiftLeft' || e.code === 'ShiftRight') && (e.code !== 'AltLeft' || e.code !== 'AltRight')) {
-    setShiftOn();
-    if (e.target.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`)) {
-      e.target.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`).classList.add('virtualKeyboard__keycap_active');
-    } else {
-      e.target.nextElementSibling.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`).classList.add('virtualKeyboard__keycap_active');
+    case 'Space': {
+      printKey(e, ' ', 1);
+      break;
     }
-  }
-  if (e.code !== 'Backspace' && e.code !== 'Delete' && e.code !== 'CapsLock' && e.code !== 'Enter' && e.code !== 'ShiftLeft' && e.code !== 'ShiftRight' && e.code !== 'ControlLeft' && e.code !== 'MetaLeft' && e.code !== 'AltLeft' && e.code !== 'AltRight' && e.code !== 'ControlRight' && e.code !== 'Tab') {
-    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'ArrowUp' && e.key !== 'ArrowDown') {
-      textArea.value += e.key;
-    } else {
-      textArea.value += enKeys[e.key];
+    case 'Tab': {
+      printKey(e, '    ', 4);
+      break;
+    }
+    case 'Backspace': {
+      const cursorPosition = textArea.selectionStart;
+      const currentValue = textArea.value;
+      const updatedValue = currentValue.slice(0, cursorPosition - 1) + currentValue.slice(cursorPosition);
+      textArea.value = updatedValue;
+      textArea.selectionStart = cursorPosition - 1;
+      textArea.selectionEnd = cursorPosition - 1;
+      break;
+    }
+    case 'Delete': {
+      const cursorPosition = textArea.selectionStart;
+      const currentValue = textArea.value;
+      const updatedValue = currentValue.slice(0, cursorPosition) + currentValue.slice(cursorPosition + 1);
+      textArea.value = updatedValue;
+      textArea.selectionStart = cursorPosition;
+      textArea.selectionEnd = cursorPosition;
+      break;
+    }
+    case 'Enter': {
+      printKey(e, '\n', 1);
+      break;
+    }
+    case 'AltLeft': {
+      e.preventDefault();
+      break;
+    }
+    case 'AltRight': {
+      e.preventDefault();
+      break;
+    }
+    case 'ControlRight': {
+      e.preventDefault();
+      break;
+    }
+    case 'ControlLeft': {
+      e.preventDefault();
+      break;
+    }
+    case 'ShiftLeft': {
+      e.preventDefault();
+      setShiftOn();
+      body.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`).classList.add('virtualKeyboard__keycap_active');
+      break;
+    }
+    case 'ShiftRight': {
+      e.preventDefault();
+      setShiftOn();
+      body.querySelector(`.virtualKeyboard__keycap[data-code="${e.code}"]`).classList.add('virtualKeyboard__keycap_active');
+      break;
+    }
+    case 'ArrowLeft': {
+      printKey(e, enKeys[e.key], 1);
+      break;
+    }
+    case 'ArrowRight': {
+      printKey(e, enKeys[e.key], 1);
+      break;
+    }
+    case 'ArrowUp': {
+      printKey(e, enKeys[e.key], 1);
+      break;
+    }
+    case 'ArrowDown': {
+      printKey(e, enKeys[e.key], 1);
+      break;
+    }
+    case 'Meta': {
+      e.preventDefault();
+      break;
+    }
+    default: {
+      printKey(e, e.key, 1);
+      break;
     }
   }
 });
