@@ -1,0 +1,20 @@
+@import url('../vendor/normalize.css');
+
+@import url('../blocks/center/center.css');
+
+@import url('../blocks/header/header.css');
+@import url('../blocks/header/__title/header__title.css');
+
+@import url('../blocks/virtualKeyboard/virtualKeyboard.css');
+@import url('../blocks/virtualKeyboard/__textArea/virtualKeyboard__textArea.css');
+@import url('../blocks/virtualKeyboard/__keyboard/virtualKeyboard__keyboard.css');
+@import url('../blocks/virtualKeyboard/__keycap/virtualKeyboard__keycap.css');
+@import url('../blocks/virtualKeyboard/__keycap/_active.css/virtualKeyboard__keycap_active.css');
+@import url('../blocks/virtualKeyboard/__keycap-simbol/virtualKeyboard__keycap-simbol.css');
+@import url('../blocks/virtualKeyboard/__keycap-caps/virtualKeyboard__keycap-caps.css');
+@import url('../blocks/virtualKeyboard/__keycap-tab/virtualKeyboard__keycap-tab.css');
+@import url('../blocks/virtualKeyboard/__keycap-shift/virtualKeyboard__keycap-shift.css');
+@import url('../blocks/virtualKeyboard/__keycap-back/virtualKeyboard__keycap-back.css');
+@import url('../blocks/virtualKeyboard/__keycap-enter/virtualKeyboard__keycap-enter.css');
+@import url('../blocks/virtualKeyboard/__keycap-space/virtualKeyboard__keycap-space.css');
+@import url('../blocks/virtualKeyboard/__description/virtualKeyboard__description.css');

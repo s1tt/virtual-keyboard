@@ -1,0 +1,6 @@
+.virtualKeyboard__keycap_active {
+  left: 2px;
+  top: 2px;
+  background-color: aqua;
+  border-radius: 10px;
+}
